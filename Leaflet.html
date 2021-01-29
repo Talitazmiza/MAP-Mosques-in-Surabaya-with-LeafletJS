@@ -1,0 +1,65 @@
+<html>
+<head>
+  <title>KATAKAN PETA</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css">
+        <script type="text/javascript" src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+        <script  type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+        <script  type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js
+
+"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.css"/> 
+        <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.Default.css" />
+        <style type="text/css">
+          #map {
+            height : 650px;
+          }
+        </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <script>
+
+  // initialize the map
+  var map = L.map('map', {
+    center: [-7.250445, 112.768845],
+    zoom: 5,
+    minZoom: 4
+  }).setView([-7.250445, 112.768845], 13);
+
+  // for the base
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png', {
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+  
+// load Masjid
+  $.getJSON("Muslim.geojson",function(data){
+    var mosqueIcon = L.icon({
+      iconUrl: 'https://image.flaticon.com/icons/png/512/618/618966.png',
+      iconSize: [60,50]
+    });
+    var mosques = L.geoJson(data,{
+      pointToLayer: function(feature,latlng){
+        var marker = L.marker(latlng,{icon: mosqueIcon});
+        marker.bindPopup(feature.properties.name);
+        return marker;
+      }
+    });
+    var clusters = L.markerClusterGroup();
+    clusters.addLayer(mosques);
+    clusters.addTo(map);
+    map.fitBounds(clusters.getBounds());
+  });
+
+
+
+
+
+  </script>
+</body>
+</html>
+
+
